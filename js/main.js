@@ -31,7 +31,7 @@ var blocks = [
       1, 1, 1, ]
 ];
 
-var colors = ["cyan","blue","orange","yellow","green","red","purple","grey"]
+var colors = ["cyan","blue","orange","yellow","green","red","purple","white"]
 
 var board = [];
 var currentShape = [];
@@ -55,7 +55,7 @@ function init(){
 function drawGrid(){
 	for(var y = 0; y < ROWS; y++){
 		for(var x = 0; x < COLS; x++){
-			drawSquare(x,y,8)
+			drawSquare(x,y,8,0.1)
 		}
 	}
 }
@@ -221,9 +221,9 @@ function renderBoard(){
 				var piece = currentShape[y-yPos][x-xPos]
 			}
 			if(piece){
-				if(piece != 0) drawSquare(x,y,piece)
+				if(piece != 0) drawSquare(x,y,piece,1)
 			} else {
-				if(board[y][x] != 0) drawSquare(x,y,board[y][x])
+				if(board[y][x] != 0) drawSquare(x,y,board[y][x],1)
 			}
 		}
 	}
@@ -292,15 +292,15 @@ function gravity(){
 	}
 }
 
-function drawSquare(x,y,id){ // coords from upper left corner
-	ctx.beginPath();
+function drawSquare(x,y,id,gridTransparency = 1){ // coords from upper left corner
 	var BlockPixelWidth = w/COLS
 	var BlockPixelHeight = h/ROWS
 	ctx.fillStyle = colors[id-1]
 	ctx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight,BlockPixelWidth,BlockPixelHeight)
 
     ctx.lineWidth   = 1;
-    ctx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight,BlockPixelWidth,BlockPixelHeight);
+    ctx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
+    ctx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight,BlockPixelWidth,BlockPixelHeight,0);
 }
 
 function newGame(){
