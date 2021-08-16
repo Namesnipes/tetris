@@ -23,6 +23,7 @@ if(keys){
         32: 'drop'
     };
 }
+console.log(keys)
 
 function updateKey(e,Key){
     e.target.value = e.key
