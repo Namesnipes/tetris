@@ -9,7 +9,12 @@ rotateKeyCW.addEventListener('keydown',function(e){updateKey(e,'rotateCW')})
 const rotateKeyCCW = document.getElementById("input5")
 rotateKeyCCW.addEventListener('keydown',function(e){updateKey(e,'rotateCCW')})
 
-var keys = {
+var keys = getCookie("keybinds")
+if(keys){
+    console.log(keys)
+    keys = JSON.parse(keys)
+} else {
+    keys = {
         37: 'left',
         39: 'right',
         40: 'down',
@@ -17,6 +22,7 @@ var keys = {
         88: 'rotateCCW',
         32: 'drop'
     };
+}
 
 function updateKey(e,Key){
     e.target.value = e.key
@@ -28,6 +34,7 @@ function updateKey(e,Key){
             break;
         }
     }
+    setCookie("keybinds",JSON.stringify(keys))
 }
 document.body.onkeydown = function( e ) {
     if (document.activeElement.tagName != "INPUT" && typeof keys[ e.keyCode ] != 'undefined' ) {
