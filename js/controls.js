@@ -11,7 +11,6 @@ rotateKeyCCW.addEventListener('keydown',function(e){updateKey(e,'rotateCCW')})
 
 var keys = getCookie("keybinds")
 if(keys){
-    console.log(keys)
     keys = JSON.parse(keys)
 } else {
     keys = {
@@ -23,10 +22,8 @@ if(keys){
         32: 'drop'
     };
 }
-console.log(keys)
 
 function updateKey(e,Key){
-    e.target.value = e.key
     var code = e.keyCode
     for(key in keys){
         if(keys[key] == Key){
@@ -36,6 +33,7 @@ function updateKey(e,Key){
         }
     }
     setCookie("keybinds",JSON.stringify(keys))
+    e.target.value = e.key
 }
 document.body.onkeydown = function( e ) {
     if (document.activeElement.tagName != "INPUT" && typeof keys[ e.keyCode ] != 'undefined' ) {

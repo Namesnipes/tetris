@@ -114,7 +114,6 @@ function moveRight(){
 }
 
 function rotate(dir){
-	console.log(dir)
 	if(!froze && currentShape && currentID != 3){
 		if(dir == "CW"){
 			var rotatedShape = spinArrayCockwise(JSON.parse(JSON.stringify(currentShape))) // clone array so it is not interfered with when looping thru
@@ -144,7 +143,6 @@ function rotate(dir){
 		for (var y = 0; y < (length); y++) {
 			for (var x = 0; x < length; x++) {
 				if(!newarr[length-x-1]) newarr[length-x-1] = [];
-				console.log(x + "," + y + " -> " + y + "," + ((length) - x - 1))
 				var oldval = arr[y][x]
 				newarr[length-x-1][y] = oldval
 			}
@@ -208,7 +206,6 @@ function printBoard(){
 			}
 		}
 		space = !space
-		console.log(row + (space && " " || ""))
 	}
 }
 
