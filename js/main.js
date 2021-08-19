@@ -50,49 +50,7 @@ var end = false;
 var RenderInterval;
 var GravityInterval;
 
-function init() {
-    for (var y = 0; y < ROWS; y++) {
-        board[y] = [];
-        for (var x = 0; x < COLS; x++) {
-            board[y][x] = 0
-        }
-    }
-}
-
-function drawGrid() {
-    for (var y = 0; y < ROWS; y++) {
-        for (var x = 0; x < COLS; x++) {
-            drawSquare(x, y, 8, 0.1)
-        }
-    }
-}
-
-function newTetromino() {
-    currentShape = [];
-    var id = Math.floor(Math.random() * 7)
-    currentID = id
-    var shape = blocks[id]
-    var color = colors[id]
-    var size = (id == 0 && 4) || 3 // 4 size only for line block
-
-    for (var y = 0; y < size; y++) {
-        currentShape[y] = []
-        for (var x = 0; x < size; x++) {
-            var i = size * y + x
-            if (typeof shape[i] != 'undefined' && shape[i]) {
-                currentShape[y][x] = id + 1
-            } else {
-                currentShape[y][x] = 0;
-            }
-        }
-    }
-    xPos = 3
-    yPos = -1
-    if (!validMove(0, 0)) {
-        yPos = -2
-    }
-    froze = false
-}
+// Tetromino movement functions
 
 function moveDown() {
     if (!froze && currentShape) {
@@ -178,6 +136,46 @@ function keyPress(key) {
     }
 }
 
+// the Meat
+
+var bag = shuffleArray([0,1,2,3,4,5,6])
+var nextBag = shuffleArray([0,1,2,3,4,5,6])
+function useNextTetromino(){
+	var pieceId = bag.shift()
+	if(bag.length <= 0){
+		bag = nextBag
+		nextBag = shuffleArray([0,1,2,3,4,5,6])
+	}
+	return pieceId
+}
+
+function newTetromino() {
+    currentShape = [];
+    var id = useNextTetromino()
+    currentID = id
+    var shape = blocks[id]
+    var color = colors[id]
+    var size = (id == 0 && 4) || 3 // 4 size only for line block
+
+    for (var y = 0; y < size; y++) {
+        currentShape[y] = []
+        for (var x = 0; x < size; x++) {
+            var i = size * y + x
+            if (typeof shape[i] != 'undefined' && shape[i]) {
+                currentShape[y][x] = id + 1
+            } else {
+                currentShape[y][x] = 0;
+            }
+        }
+    }
+    xPos = 3
+    yPos = -1
+    if (!validMove(0, 0)) {
+        yPos = -2
+    }
+    froze = false
+}
+
 function validMove(xOffset, yOffset, testBlock) {
     var block = testBlock || currentShape
     var newX = xPos + xOffset
@@ -195,42 +193,6 @@ function validMove(xOffset, yOffset, testBlock) {
         }
     }
     return true
-}
-
-function printBoard() {
-    var space = false
-    for (var y = 0; y < ROWS; y++) {
-        var row = ""
-        for (var x = 0; x < COLS; x++) {
-            var piece = false;
-            if (typeof currentShape[y - yPos] != 'undefined') {
-                var piece = currentShape[y - yPos][x - xPos]
-            }
-            if (piece) {
-                row += " " + piece
-            } else {
-                row += " " + (board[y][x])
-            }
-        }
-        space = !space
-    }
-}
-
-function renderBoard() {
-    for (var y = 0; y < ROWS; y++) {
-        var row = ""
-        for (var x = 0; x < COLS; x++) {
-            var piece = false;
-            if (typeof currentShape[y - yPos] != 'undefined') {
-                var piece = currentShape[y - yPos][x - xPos]
-            }
-            if (piece) {
-                if (piece != 0) drawSquare(x, y, piece, 1)
-            } else {
-                if (board[y][x] != 0) drawSquare(x, y, board[y][x], 1)
-            }
-        }
-    }
 }
 
 function paintPieceToBoard() {
@@ -271,6 +233,65 @@ function clearLines() {
     }
 }
 
+//render and debug funcs
+
+function printBoard() {
+    var space = false
+    for (var y = 0; y < ROWS; y++) {
+        var row = ""
+        for (var x = 0; x < COLS; x++) {
+            var piece = false;
+            if (typeof currentShape[y - yPos] != 'undefined') {
+                var piece = currentShape[y - yPos][x - xPos]
+            }
+            if (piece) {
+                row += " " + piece
+            } else {
+                row += " " + (board[y][x])
+            }
+        }
+        space = !space
+    }
+}
+
+function renderBoard() {
+    for (var y = 0; y < ROWS; y++) {
+        var row = ""
+        for (var x = 0; x < COLS; x++) {
+            var piece = false;
+            if (typeof currentShape[y - yPos] != 'undefined') {
+                var piece = currentShape[y - yPos][x - xPos]
+            }
+            if (piece) {
+                if (piece != 0) drawSquare(x, y, piece, 1)
+            } else {
+                if (board[y][x] != 0) drawSquare(x, y, board[y][x], 1)
+            }
+        }
+    }
+}
+
+function drawSquare(x, y, id, gridTransparency = 1) { // coords from upper left corner
+    var BlockPixelWidth = w / COLS
+    var BlockPixelHeight = h / ROWS
+    ctx.fillStyle = colors[id - 1]
+    ctx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
+    ctx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight, 0);
+}
+
+function drawGrid() {
+    for (var y = 0; y < ROWS; y++) {
+        for (var x = 0; x < COLS; x++) {
+            drawSquare(x, y, 8, 0.1)
+        }
+    }
+}
+
+//game loop stuff
+
 function renderStepped() {
     ctx.clearRect(0, 0, w, h);
     drawGrid()
@@ -287,21 +308,19 @@ function renderStepped() {
     renderBoard()
 }
 
-function gravity() {
-    if (currentShape) {
-        moveDown()
+function init() {
+    for (var y = 0; y < ROWS; y++) {
+        board[y] = [];
+        for (var x = 0; x < COLS; x++) {
+            board[y][x] = 0
+        }
     }
 }
 
-function drawSquare(x, y, id, gridTransparency = 1) { // coords from upper left corner
-    var BlockPixelWidth = w / COLS
-    var BlockPixelHeight = h / ROWS
-    ctx.fillStyle = colors[id - 1]
-    ctx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
-
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
-    ctx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight, 0);
+function gravity() { // increase function call rate to increase
+    if (currentShape) {
+        moveDown()
+    }
 }
 
 function newGame() {
