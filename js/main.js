@@ -78,6 +78,17 @@ function moveRight() {
     }
 }
 
+function hardDrop(){
+	if (!froze && currentShape) {
+		for(var i = 20; i>=yPos; i--){
+			if(validMove(0,i-yPos)){
+				yPos += i-yPos
+				froze = true
+			}
+		}
+	}
+}
+
 function rotate(dir) {
     if (!froze && currentShape && currentID != 3) {
         if (dir == "CW") {
@@ -133,13 +144,16 @@ function keyPress(key) {
         case 'rotateCCW':
             rotate('CCW')
             break;
+        case 'hardDrop':
+        	hardDrop()
+        	break;
     }
 }
 
 // the Meat
 
-var bag = shuffleArray([0,1,2,3,4,5,6])
-var nextBag = shuffleArray([0,1,2,3,4,5,6])
+var bag;
+var nextBag;
 function useNextTetromino(){
 	var pieceId = bag.shift()
 	if(bag.length <= 0){
@@ -319,13 +333,15 @@ function init() {
 
 function gravity() { // increase function call rate to increase
     if (currentShape) {
-        moveDown()
+       moveDown()
     }
 }
 
 function newGame() {
     end = false;
     init()
+    bag = shuffleArray([0,1,2,3,4,5,6])
+	nextBag = shuffleArray([0,1,2,3,4,5,6])
     newTetromino()
     RenderInterval = setInterval(renderStepped, 1000 / 60)
     GravityInterval = setInterval(gravity, 1000)

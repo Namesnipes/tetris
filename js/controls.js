@@ -10,11 +10,17 @@ const downKey = document.getElementById("input3")
 downKey.addEventListener('keydown', function(e) {
     updateKey(e, 'down')
 })
-const rotateKeyCW = document.getElementById("input4")
+
+const hardDropKey = document.getElementById("input4")
+hardDropKey.addEventListener('keydown', function(e) {
+    updateKey(e, 'hardDrop')
+})
+
+const rotateKeyCW = document.getElementById("input5")
 rotateKeyCW.addEventListener('keydown', function(e) {
     updateKey(e, 'rotateCW')
 })
-const rotateKeyCCW = document.getElementById("input5")
+const rotateKeyCCW = document.getElementById("input6")
 rotateKeyCCW.addEventListener('keydown', function(e) {
     updateKey(e, 'rotateCCW')
 })
@@ -40,7 +46,7 @@ if (!keys) {
         40: ['ArrowDown', 'down'],
         90: ['z', 'rotateCW'],
         88: ['x', 'rotateCCW'],
-        32: ['spacebar', 'drop']
+        32: ['spacebar', 'hardDrop']
     };
 }
 
@@ -64,7 +70,8 @@ for (keyCode in keys) {
         case 'rotateCCW':
             rotateKeyCCW.value = keyName
             break;
-        case 'drop':
+        case 'hardDrop':
+            hardDropKey.value = keyName
             break;
     }
 }
