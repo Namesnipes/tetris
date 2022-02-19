@@ -79,8 +79,10 @@ for (keyCode in keys) {
 
 //update key table, update textbox value, and update cookie keybinds on keypress
 function updateKey(e, Action) {
-    e.target.value = e.key
+    console.log(e.keyCode + " " + Action)
     var code = e.keyCode
+    if(code in keys) return;
+    e.target.value = e.key
     for (keyCode in keys) {
         if (keys[keyCode][1] == Action) {
             delete keys[keyCode]

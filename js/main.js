@@ -3,10 +3,18 @@
 const COLS = 10
 const ROWS = 20
 
+const queueCOLS = 4;
+const queueROWS = 12;
+
 var c = document.getElementById("tetris");
 var w = c.width
 var h = c.height
 var ctx = c.getContext("2d");
+
+var q = document.getElementById("queueCanvas");
+var queueW = c.width
+var queueH = c.height
+var queueCtx = c.getContext("2d");
 
 var blocks = [
     [0, 0, 0, 0,
@@ -41,6 +49,8 @@ var blocks = [
 var colors = ["cyan", "blue", "orange", "yellow", "green", "red", "purple", "white"]
 
 var board = [];
+var queueBoard = [];
+
 var currentShape = [];
 var xPos = 0; // coords from top left
 var yPos = 0;
@@ -154,6 +164,14 @@ function keyPress(key) {
 
 var bag;
 var nextBag;
+
+function getNthTetrominoInQueue(n){
+	var tet = bag[n-1];
+	if(tet == undefined){
+		tet = nextBag[n-bag.length-1]
+	}
+}
+
 function useNextTetromino(){
 	var pieceId = bag.shift()
 	if(bag.length <= 0){
@@ -329,9 +347,17 @@ function init() {
             board[y][x] = 0
         }
     }
+
+    for (var y = 0; y < queueROWS; y++) {
+        queueBoard[y] = [];
+        for (var x = 0; x < queueCOLS; x++) {
+            queueBoard[y][x] = 0
+        }
+    }
+
 }
 
-function gravity() { // increase function call rate to increase
+function gravity() { // increase function call rate to increase gravity
     if (currentShape) {
        moveDown()
     }

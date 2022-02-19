@@ -2,12 +2,14 @@
 <html>
     <head>
 		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="js/style.css" media=”screen” />
         <title>MooMan's Tetris</title>
     </head>
     <body>
 		<div class="wrapper" style="margin: 0 auto; width: 300px; position: relative;">
 			<canvas id='tetris' width='300' height='600' style="border:1px solid #000000;" align="center"></canvas>
-			<div class="controls" style="position: absolute; top:0px; left:310px;">
+			<div class="controls" ;="" position:="" style="margin-right:150px; position: relative;
+  left: -160px; bottom:600px" align="left">
 				<h2>Controls</h2>
 				<td>Move Left:</td>
 				<input id="input1" type="text" value="" maxlength="0" onkeydown="return false">
@@ -21,6 +23,9 @@
 				<input id="input5" type="text" value="" maxlength="0" onkeydown="return false">
 				<td>Rotate Left:</td>
 				<input id="input6" type="text" value="" maxlength="0" onkeydown="return false">
+			</div>
+			<div class = "queue" style="position: absolute; top:0px; left:310px;">
+				<canvas id='queueCanvas' width='90' height='300' style="border:1px solid #000000;" align="center"></canvas>
 			</div>
 		</div>
     </body>
