@@ -81,7 +81,13 @@ for (keyCode in keys) {
 function updateKey(e, Action) {
     console.log(e.keyCode + " " + Action)
     var code = e.keyCode
-    if(code in keys) return;
+    if(code in keys){
+      e.target.style['background-color'] = 'red'
+      setTimeout(function(){
+        e.target.style['background-color'] = null
+      },1000)
+      return
+    };
     e.target.value = e.key
     for (keyCode in keys) {
         if (keys[keyCode][1] == Action) {
