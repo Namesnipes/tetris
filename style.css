@@ -1,0 +1,36 @@
+.wrapper{
+  margin: 0 auto;
+  width: 900px;
+}
+
+#tetris{
+  border: 1px solid black;
+  margin: 0 auto;
+}
+
+.controls{
+  float: left;
+  width: 300px;
+  padding: 10px;
+}
+
+.clear{
+  clear: both;
+}
+
+.queue{
+  float: right;
+  width: 238px;
+  padding: 20px;
+}
+
+#queueCanvas{
+  border:0px solid #000000;
+}
+.form-row {
+    margin: 10px 0px;
+}
+label{
+  float: left;
+  width: 100px;
+}
