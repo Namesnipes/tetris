@@ -12,9 +12,9 @@ var h = c.height
 var ctx = c.getContext("2d");
 
 var q = document.getElementById("queueCanvas");
-var queueW = c.width
-var queueH = c.height
-var queueCtx = c.getContext("2d");
+var queueW = q.width
+var queueH = q.height
+var queueCtx = q.getContext("2d");
 
 var blocks = [
     [0, 0, 0, 0,
@@ -170,6 +170,7 @@ function getNthTetrominoInQueue(n){
 	if(tet == undefined){
 		tet = nextBag[n-bag.length-1]
 	}
+  return tet
 }
 
 function useNextTetromino(){
@@ -295,29 +296,55 @@ function renderBoard() {
                 var piece = currentShape[y - yPos][x - xPos]
             }
             if (piece) {
-                if (piece != 0) drawSquare(x, y, piece, 1)
+                if (piece != 0) drawSquare(x, y, piece, false, 1)
             } else {
-                if (board[y][x] != 0) drawSquare(x, y, board[y][x], 1)
+                if (board[y][x] != 0) drawSquare(x, y, board[y][x], false, 1)
             }
         }
     }
 }
 
-function drawSquare(x, y, id, gridTransparency = 1) { // coords from upper left corner
-    var BlockPixelWidth = w / COLS
-    var BlockPixelHeight = h / ROWS
-    ctx.fillStyle = colors[id - 1]
-    ctx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
-
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
-    ctx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight, 0);
+function renderQueue(){
+  for(var nthPiece = 1; nthPiece < 4; nthPiece++){
+    var theId = getNthTetrominoInQueue(nthPiece)
+    var thePiece = [...blocks[theId]]
+    var size = (theId == 0 && 4) || 3
+    var padding = Array((size * 3) * (nthPiece-1)).fill(0)
+    thePiece = padding.concat(thePiece)
+    console.log(padding.length)
+    for(var x = 0; x < (queueCOLS * queueROWS); x++){
+      var y = Math.floor(x/size)
+      var realX = x % size
+      if(thePiece[x] == 1){
+        drawSquare(realX,y,theId+1,true,1)
+      }
+    }
+  }
 }
 
-function drawGrid() {
-    for (var y = 0; y < ROWS; y++) {
-        for (var x = 0; x < COLS; x++) {
-            drawSquare(x, y, 8, 0.1)
+function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from upper left corner
+    var thisCols = (isQueue && queueCOLS) || COLS
+    var thisRows = (isQueue && queueROWS) || ROWS
+    var thisCtx = (isQueue && queueCtx) || ctx
+    var BlockPixelWidth = ((isQueue && queueW) || w) / thisCols
+    var BlockPixelHeight = ((isQueue && queueH) || h) / thisRows
+
+    thisCtx.fillStyle = colors[id - 1]
+    thisCtx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
+
+    thisCtx.lineWidth = 1;
+    thisCtx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
+    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight, 0);
+}
+
+function drawGrid(q = false) {
+  var thisCols = (q && queueCOLS) || COLS
+  var thisRows = (q && queueROWS) || ROWS
+  var thisTransparency = (q && '0') || 0.1
+  console.log(thisTransparency)
+    for (var y = 0; y < thisRows; y++) {
+        for (var x = 0; x < thisCols; x++) {
+            drawSquare(x, y, 8, q, thisTransparency)
         }
     }
 }
@@ -327,6 +354,7 @@ function drawGrid() {
 function renderStepped() {
     ctx.clearRect(0, 0, w, h);
     drawGrid()
+    drawGrid(true)
     if (froze) {
         paintPieceToBoard()
         clearLines()
@@ -338,6 +366,7 @@ function renderStepped() {
         newGame()
     }
     renderBoard()
+    renderQueue()
 }
 
 function init() {
