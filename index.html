@@ -1,36 +1,57 @@
 <!DOCTYPE html>
 <html>
-    <head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="js/style.css" media=”screen” />
-        <title>MooMan's Tetris</title>
-    </head>
-    <body>
-		<div class="wrapper" style="margin: 0 auto; width: 300px; height: 600px; position: relative;">
-			<canvas id='tetris' width='300' height='600' style="border:1px solid #000000;" align="center"></canvas>
-			<div class="controls" ;="" position:="" style="margin-right:150px; position: relative;
-  left: -160px; bottom:600px" align="left">
-				<h2>Controls</h2>
-				<td>Move Left:</td>
-				<input id="input1" type="text" value="" maxlength="0" onkeydown="return false">
-				<td>Move Right:</td>
-				<input id="input2" type="text" value="" maxlength="0" onkeydown="return false">
-				<td>Move Down:</td>
-				<input id="input3" type="text" value="" maxlength="0" onkeydown="return false">
-				<td>Hard Drop:</td>
-				<input id="input4" type="text" value="" maxlength="0" onkeydown="return false">
-				<td>Rotate Right:</td>
-				<input id="input5" type="text" value="" maxlength="0" onkeydown="return false">
-				<td>Rotate Left:</td>
-				<input id="input6" type="text" value="" maxlength="0" onkeydown="return false">
+
+  <head>
+  	<meta charset="utf-8">
+  	<link rel="stylesheet" href ="style.css">
+    <title>MooMan's Tetris</title>
+  </head>
+
+  <body>
+
+		<div class="wrapper">
+      <div class="controls">
+        <h2>Controls</h2>
+        <form>
+          <div class="form-row">
+        <label>Move Left:</label>
+        <input id="input1" type="text" value="" maxlength="0" onkeydown="return false">
+      </div>
+      <div class="form-row">
+        <label>Move Right:</label>
+        <input id="input2" type="text" value="" maxlength="0" onkeydown="return false">
+      </div>
+      <div class="form-row">
+        <label>Move Down:</label>
+        <input id="input3" type="text" value="" maxlength="0" onkeydown="return false">
+      </div>
+      <div class="form-row">
+        <label>Hard Drop:</label>
+        <input id="input4" type="text" value="" maxlength="0" onkeydown="return false">
+      </div>
+      <div class="form-row">
+        <label>Rotate Right:</label>
+        <input id="input5" type="text" value="" maxlength="0" onkeydown="return false">
+      </div>
+      <div class="form-row">
+        <label>Rotate Left:</label>
+        <input id="input6" type="text" value="" maxlength="0" onkeydown="return false">
+      </div>
+      </form>
+      </div>
+      <div id="game">
+      <canvas id="tetris" width="300" height="600"></canvas>
+			<div class="queue">
+			  <canvas id='queueCanvas' width="90" height="300"></canvas>
 			</div>
-			<div class = "queue" style="position: absolute; top:0px; left:310px;">
-				<canvas id='queueCanvas' width='90' height='300' style="border:0px solid #000000;" align="center"></canvas>
-			</div>
+      <div class="clear"></div>
+    </div>
 		</div>
     </body>
+
 	<script src='js/helper.js'></script>
 	<script src='js/cookies.js'></script>
 	<script src='js/main.js'></script>
 	<script src='js/controls.js'></script>
+
 </html>
