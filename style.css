@@ -22,6 +22,8 @@
   float: right;
   width: 238px;
   padding: 20px;
+  position: absolute;
+  display: inline;
 }
 
 #queueCanvas{

@@ -16,6 +16,9 @@ var queueW = q.width
 var queueH = q.height
 var queueCtx = q.getContext("2d");
 
+q.width = q.width + 100 // move the content of queue into the middle of the canvas, some pixels get cut off from the edge if u dont
+queueCtx.translate(10,0)
+
 var blocks = [
     [0, 0, 0, 0,
      1, 1, 1, 1
@@ -311,7 +314,6 @@ function renderQueue(){
     var size = (theId == 0 && 4) || 3
     var padding = Array((size * 3) * (nthPiece-1)).fill(0)
     thePiece = padding.concat(thePiece)
-    console.log(padding.length)
     for(var x = 0; x < (queueCOLS * queueROWS); x++){
       var y = Math.floor(x/size)
       var realX = x % size
@@ -334,14 +336,13 @@ function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from up
 
     thisCtx.lineWidth = 1;
     thisCtx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
-    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight, 0);
+    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight);
 }
 
 function drawGrid(q = false) {
   var thisCols = (q && queueCOLS) || COLS
   var thisRows = (q && queueROWS) || ROWS
   var thisTransparency = (q && '0') || 0.1
-  console.log(thisTransparency)
     for (var y = 0; y < thisRows; y++) {
         for (var x = 0; x < thisCols; x++) {
             drawSquare(x, y, 8, q, thisTransparency)
@@ -353,6 +354,7 @@ function drawGrid(q = false) {
 
 function renderStepped() {
     ctx.clearRect(0, 0, w, h);
+    queueCtx.clearRect(-1, 0, queueW+2, queueH); // i think the queueCtx.translate(10,0) has some floating point errors, theres a pixel that isn't cleared if you dont do it from -1 to queueW +2
     drawGrid()
     drawGrid(true)
     if (froze) {
