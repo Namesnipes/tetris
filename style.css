@@ -44,6 +44,8 @@ body{
   margin-top: 30px;
   text-align: center;
   color: #f2ede4;
+  position: absolute;
+  display: inline;
 }
 
 .form-row {

@@ -16,6 +16,9 @@ var queueW = q.width
 var queueH = q.height
 var queueCtx = q.getContext("2d");
 
+q.width = q.width + 100 // move the content of queue into the middle of the canvas, some pixels get cut off from the edge if u dont
+queueCtx.translate(10,0)
+
 var blocks = [
     [0, 0, 0, 0,
      1, 1, 1, 1
@@ -62,10 +65,23 @@ var GravityInterval;
 
 // Tetromino movement functions
 
-function moveDown() {
-    if (!froze && currentShape) {
+var isSoftDropping = false
+
+function moveDown(keyUp, isUserInput = false) {
+    if(isUserInput && isSoftDropping && keyUp){
+      isSoftDropping = false
+      setGravity(1000)
+    }
+
+    if(isUserInput && !keyUp && !isSoftDropping){
+        isSoftDropping = true
+        setGravity(100)
+    }
+
+    if (!froze && currentShape && !keyUp) {
         if (validMove(0, 1)) {
             yPos += 1
+            if(!isUserInput) return
         } else {
             froze = true
         }
@@ -137,7 +153,8 @@ function rotate(dir) {
     }
 }
 
-function keyPress(key) {
+function keyPress(key,isUp) {
+  if(isUp && key != 'down') return
     switch (key) {
         case 'left':
             moveLeft()
@@ -146,7 +163,7 @@ function keyPress(key) {
             moveRight()
             break
         case 'down':
-            moveDown()
+            moveDown(isUp,true)
             break;
         case 'rotateCW':
             rotate('CW')
@@ -311,7 +328,6 @@ function renderQueue(){
     var size = (theId == 0 && 4) || 3
     var padding = Array((size * 3) * (nthPiece-1)).fill(0)
     thePiece = padding.concat(thePiece)
-    console.log(padding.length)
     for(var x = 0; x < (queueCOLS * queueROWS); x++){
       var y = Math.floor(x/size)
       var realX = x % size
@@ -363,14 +379,16 @@ function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from up
     else if(id==7){
       thisCtx.strokeStyle = 'rgba(146, 77, 171,' + gridTransparency + ')';
     }
-    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight, 0);
+    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight);
+    thisCtx.lineWidth = 1;
+    thisCtx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
+    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight);
 }
 
 function drawGrid(q = false) {
   var thisCols = (q && queueCOLS) || COLS
   var thisRows = (q && queueROWS) || ROWS
   var thisTransparency = (q && '0') || 0.1
-  console.log(thisTransparency)
     for (var y = 0; y < thisRows; y++) {
         for (var x = 0; x < thisCols; x++) {
             drawSquare(x, y, 8, q, thisTransparency)
@@ -382,9 +400,11 @@ function drawGrid(q = false) {
 
 function renderStepped() {
     ctx.clearRect(0, 0, w, h);
+    queueCtx.clearRect(-1, 0, queueW+2, queueH); // i think the queueCtx.translate(10,0) has some floating point errors, theres a pixel that isn't cleared if you dont do it from -1 to queueW +2
     drawGrid()
     drawGrid(true)
     if (froze) {
+        //setGravity(1000)
         paintPieceToBoard()
         clearLines()
         if (!end) newTetromino();
@@ -417,8 +437,13 @@ function init() {
 
 function gravity() { // increase function call rate to increase gravity
     if (currentShape) {
-       moveDown()
+       moveDown(false)
     }
+}
+
+function setGravity(secondsPerFall){
+  clearInterval(GravityInterval)
+  GravityInterval = setInterval(gravity, secondsPerFall)
 }
 
 function newGame() {
@@ -428,7 +453,7 @@ function newGame() {
 	nextBag = shuffleArray([0,1,2,3,4,5,6])
     newTetromino()
     RenderInterval = setInterval(renderStepped, 1000 / 60)
-    GravityInterval = setInterval(gravity, 1000)
+    setGravity(1000)
 }
 
 newGame()
