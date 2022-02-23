@@ -1,10 +1,16 @@
+body{
+  background-color: #4e4f80;
+  font-family: monospace;
+}
+
 .wrapper{
   margin: 0 auto;
   width: 900px;
 }
 
 #tetris{
-  border: 1px solid black;
+  border: 2px solid #f2ede4;
+  border-radius: 4px;
   margin: 0 auto;
 }
 
@@ -12,6 +18,10 @@
   float: left;
   width: 300px;
   padding: 10px;
+  color: #f2ede4;
+}
+.controls h2{
+  font-size: 25px;
 }
 
 .clear{
@@ -20,17 +30,27 @@
 
 .queue{
   float: right;
-  width: 238px;
+  width: 90px;
+  height: 300px;
   padding: 20px;
+  margin: 20px;
+  position: absolute;
+  display: inline;
+  background-color: #23204a;
+  border: 2px solid #f2ede4;
+  border-radius: 4px;
+}
+.queue h2{
+  margin-top: 30px;
+  text-align: center;
+  color: #f2ede4;
 }
 
-#queueCanvas{
-  border:0px solid #000000;
-}
 .form-row {
     margin: 10px 0px;
 }
 label{
   float: left;
   width: 100px;
+  font-size: 12px;
 }

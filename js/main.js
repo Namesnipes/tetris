@@ -46,7 +46,7 @@ var blocks = [
     ]
 ];
 
-var colors = ["cyan", "blue", "orange", "yellow", "green", "red", "purple", "white"]
+var colors = ["#a8ebff", "#6666ed", "#f7a540", "#ffdf75", "#a1d186", "#fa5252", "#ce79ed", "#23204a"]
 
 var board = [];
 var queueBoard = [];
@@ -332,8 +332,37 @@ function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from up
     thisCtx.fillStyle = colors[id - 1]
     thisCtx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
 
-    thisCtx.lineWidth = 1;
-    thisCtx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
+    thisCtx.lineWidth = 2;
+    //background grid stroke
+    thisCtx.strokeStyle = 'rgba(242, 237, 228,' + gridTransparency + ')';
+    //line block
+    if(id==1){                        // this litrally makes no sense babe but Okay
+      thisCtx.strokeStyle = 'rgba(112, 200, 219,' + gridTransparency + ')';
+    }
+    //The Blue One:
+    else if(id==2){
+      thisCtx.strokeStyle = 'rgba(65, 65, 158,' + gridTransparency + ')';
+    }
+    //o range
+    else if(id==3){
+      thisCtx.strokeStyle = 'rgba(219, 131, 24,' + gridTransparency + ')';
+    }
+    //blocc
+    else if(id==4){
+      thisCtx.strokeStyle = 'rgba(245, 192, 78,' + gridTransparency + ')';
+    }
+    // gween OwO
+    else if(id==5){
+      thisCtx.strokeStyle = 'rgba(97, 150, 68,' + gridTransparency + ')';
+    }
+    // me af
+    else if(id==6){
+      thisCtx.strokeStyle = 'rgba(191, 46, 46,' + gridTransparency + ')';
+    }
+    //my t is spinning
+    else if(id==7){
+      thisCtx.strokeStyle = 'rgba(146, 77, 171,' + gridTransparency + ')';
+    }
     thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight, 0);
 }
 
