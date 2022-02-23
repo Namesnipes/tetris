@@ -39,14 +39,14 @@ if (keys) {
     }
 }
 
-if (!keys) {
+if (!keys) { // format - keycode: [keyname, corresponding tetris input, isKeyHeldDown]
     keys = { //We could include the textbox object in the array values so we don't have to use the ugly switch statement below (I think its beautiful though)
-        37: ['ArrowLeft', 'left'],
-        39: ['ArrowRight', 'right'],
-        40: ['ArrowDown', 'down'],
-        90: ['z', 'rotateCW'],
-        88: ['x', 'rotateCCW'],
-        32: ['spacebar', 'hardDrop']
+        37: ['ArrowLeft', 'left', false],
+        39: ['ArrowRight', 'right', false],
+        40: ['ArrowDown', 'down', false],
+        90: ['z', 'rotateCW', false],
+        88: ['x', 'rotateCCW', false],
+        32: ['spacebar', 'hardDrop', false]
     };
 }
 
@@ -92,15 +92,27 @@ function updateKey(e, Action) {
     for (keyCode in keys) {
         if (keys[keyCode][1] == Action) {
             delete keys[keyCode]
-            keys[code] = [e.key, Action]
+            keys[code] = [e.key, Action, false]
             break;
         }
     }
     setCookie("keybinds", JSON.stringify(keys))
 }
 
+
 document.body.onkeydown = function(e) {
     if (document.activeElement.tagName != "INPUT" && typeof keys[e.keyCode] != 'undefined') {
-        keyPress(keys[e.keyCode][1]);
+        var isDown = keys[e.keyCode][2]
+        if(isDown) return
+        keys[e.keyCode][2] = true
+        keyPress(keys[e.keyCode][1],false);
+    }
+};
+
+document.body.onkeyup = function(e) {
+    if (document.activeElement.tagName != "INPUT" && typeof keys[e.keyCode] != 'undefined') {
+        var isDown = keys[e.keyCode][2]
+        keys[e.keyCode][2] = false
+        keyPress(keys[e.keyCode][1],true);
     }
 };

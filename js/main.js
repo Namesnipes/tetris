@@ -65,10 +65,23 @@ var GravityInterval;
 
 // Tetromino movement functions
 
-function moveDown() {
-    if (!froze && currentShape) {
+var isSoftDropping = false
+
+function moveDown(keyUp, isUserInput = false) {
+    if(isUserInput && isSoftDropping && keyUp){
+      isSoftDropping = false
+      setGravity(1000)
+    }
+
+    if(isUserInput && !keyUp && !isSoftDropping){
+        isSoftDropping = true
+        setGravity(100)
+    }
+
+    if (!froze && currentShape && !keyUp) {
         if (validMove(0, 1)) {
             yPos += 1
+            if(!isUserInput) return
         } else {
             froze = true
         }
@@ -140,7 +153,8 @@ function rotate(dir) {
     }
 }
 
-function keyPress(key) {
+function keyPress(key,isUp) {
+  if(isUp && key != 'down') return
     switch (key) {
         case 'left':
             moveLeft()
@@ -149,7 +163,7 @@ function keyPress(key) {
             moveRight()
             break
         case 'down':
-            moveDown()
+            moveDown(isUp,true)
             break;
         case 'rotateCW':
             rotate('CW')
@@ -358,6 +372,7 @@ function renderStepped() {
     drawGrid()
     drawGrid(true)
     if (froze) {
+        //setGravity(1000)
         paintPieceToBoard()
         clearLines()
         if (!end) newTetromino();
@@ -390,8 +405,13 @@ function init() {
 
 function gravity() { // increase function call rate to increase gravity
     if (currentShape) {
-       moveDown()
+       moveDown(false)
     }
+}
+
+function setGravity(secondsPerFall){
+  clearInterval(GravityInterval)
+  GravityInterval = setInterval(gravity, secondsPerFall)
 }
 
 function newGame() {
@@ -401,7 +421,7 @@ function newGame() {
 	nextBag = shuffleArray([0,1,2,3,4,5,6])
     newTetromino()
     RenderInterval = setInterval(renderStepped, 1000 / 60)
-    GravityInterval = setInterval(gravity, 1000)
+    setGravity(1000)
 }
 
 newGame()
