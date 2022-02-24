@@ -384,8 +384,6 @@ function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from up
       thisCtx.strokeStyle = 'rgba(146, 77, 171,' + gridTransparency + ')';
     }
     thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight);
-    thisCtx.lineWidth = 1;
-    thisCtx.strokeStyle = 'rgba(0,0,0,' + gridTransparency + ')';
     thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight);
 }
 
