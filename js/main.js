@@ -106,12 +106,16 @@ function moveRight() {
 
 function hardDrop(){
 	if (!froze && currentShape) {
-		for(var i = 20; i>=yPos; i--){
-			if(validMove(0,i-yPos)){
-				yPos += i-yPos
-				froze = true
-			}
+    var blocksToMoveDown = 0
+		for(var i = 0; i<20-yPos; i++){
+			if(validMove(0,i)){
+        blocksToMoveDown = i
+			} else {
+        break
+      }
 		}
+    yPos += blocksToMoveDown
+    froze = true
 	}
 }
 
