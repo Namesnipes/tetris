@@ -66,8 +66,11 @@ var GravityInterval;
 // Tetromino movement functions
 
 var isSoftDropping = false
+var currentGravity = 700 //gravity of current level
 
-function moveDown(keyUp, isUserInput = false) {
+function moveDown(keyUp, isUserInput = false, cellsDown = 1) {
+    if(cellsDown <= 0) return
+
     if(isUserInput && isSoftDropping && keyUp){
       isSoftDropping = false
       setGravity(1000)
@@ -81,7 +84,7 @@ function moveDown(keyUp, isUserInput = false) {
     if (!froze && currentShape && !keyUp) {
         if (validMove(0, 1)) {
             yPos += 1
-            if(!isUserInput) return
+            moveDown(false,false,cellsDown-1)
         } else {
             froze = true
         }
@@ -105,6 +108,9 @@ function moveRight() {
 }
 
 function hardDrop(){
+  setGravity(0)
+
+  /*
 	if (!froze && currentShape) {
     var blocksToMoveDown = 0
 		for(var i = 0; i<20-yPos; i++){
@@ -117,6 +123,7 @@ function hardDrop(){
     yPos += blocksToMoveDown
     froze = true
 	}
+  */
 }
 
 function rotate(dir) {
@@ -287,7 +294,7 @@ function clearLines() {
     }
 }
 
-//render and debug funcs
+//render and debug func
 
 function printBoard() {
     var space = false
@@ -413,7 +420,7 @@ function renderStepped() {
     drawGrid()
     drawGrid(true)
     if (froze) {
-        //setGravity(1000)
+        setGravity(currentGravity)
         paintPieceToBoard()
         clearLines()
         if (!end) newTetromino();
@@ -444,15 +451,20 @@ function init() {
 
 }
 
-function gravity() { // increase function call rate to increase gravity
+function gravity(cellsPerFrame) { // increase function call rate to increase gravity
     if (currentShape) {
-       moveDown(false)
+       moveDown(false,false,cellsPerFrame)
     }
 }
 
-function setGravity(secondsPerFall){
+function setGravity(msPerFall){
+  var cellsPerFrame = 1
+  if(msPerFall < (1000/60)){
+    cellsPerFrame = (1000/60) / msPerFall
+    msPerfall = (1000/60)
+  }
   clearInterval(GravityInterval)
-  GravityInterval = setInterval(gravity, secondsPerFall)
+  GravityInterval = setInterval(gravity, msPerFall, Math.round(cellsPerFrame))
 }
 
 function newGame() {
@@ -462,7 +474,7 @@ function newGame() {
 	nextBag = shuffleArray([0,1,2,3,4,5,6])
     newTetromino()
     RenderInterval = setInterval(renderStepped, 1000 / 60)
-    setGravity(1000)
+    setGravity(currentGravity)
 }
 
 newGame()
