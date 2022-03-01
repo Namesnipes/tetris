@@ -342,7 +342,7 @@ function renderQueue(){
   }
 }
 
-function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from upper left corner
+function drawSquare(x, y, id, isQueue, gridTransparency = 1, isGrid = false) { // coords from upper left corner
     var thisCols = (isQueue && queueCOLS) || COLS
     var thisRows = (isQueue && queueROWS) || ROWS
     var thisCtx = (isQueue && queueCtx) || ctx
@@ -352,11 +352,14 @@ function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from up
     thisCtx.fillStyle = colors[id - 1]
     thisCtx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
 
-    thisCtx.lineWidth = 2;
+    if(isGrid) {thisCtx.lineWidth = 1;}
+    else {thisCtx.lineWidth = 4;}
     //background grid stroke
     thisCtx.strokeStyle = 'rgba(242, 237, 228,' + gridTransparency + ')';
+
+
     //line block
-    if(id==1){                        // this litrally makes no sense babe but Okay
+    if(id==1){
       thisCtx.strokeStyle = 'rgba(112, 200, 219,' + gridTransparency + ')';
     }
     //The Blue One:
@@ -383,9 +386,13 @@ function drawSquare(x, y, id, isQueue, gridTransparency = 1) { // coords from up
     else if(id==7){
       thisCtx.strokeStyle = 'rgba(146, 77, 171,' + gridTransparency + ')';
     }
-    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight);
-    thisCtx.strokeRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight);
+
+    thisCtx.strokeRect(x * BlockPixelWidth+thisCtx.lineWidth/2, y * BlockPixelHeight+thisCtx.lineWidth/2, BlockPixelWidth-thisCtx.lineWidth, BlockPixelHeight-thisCtx.lineWidth);
+
 }
+
+
+
 
 function drawGrid(q = false) {
   var thisCols = (q && queueCOLS) || COLS
@@ -393,7 +400,7 @@ function drawGrid(q = false) {
   var thisTransparency = (q && '0') || 0.1
     for (var y = 0; y < thisRows; y++) {
         for (var x = 0; x < thisCols; x++) {
-            drawSquare(x, y, 8, q, thisTransparency)
+            drawSquare(x, y, 8, q, thisTransparency,true)
         }
     }
 }
