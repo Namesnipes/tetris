@@ -50,6 +50,7 @@ var blocks = [
 ];
 
 var colors = ["#a8ebff", "#6666ed", "#f7a540", "#ffdf75", "#a1d186", "#fa5252", "#ce79ed", "#23204a"]
+var themes = ["./assets/Theme1"]
 
 var board = [];
 var queueBoard = [];
@@ -67,6 +68,9 @@ var GravityInterval;
 
 var isSoftDropping = false
 var currentGravity = 700 //gravity of current level
+var currentTheme = {"id": -1, "blockImg": null};
+var hasTheme = false
+//setTheme(0)
 
 function moveDown(keyUp, isUserInput = false, cellsDown = 1) {
     if(cellsDown <= 0) return
@@ -78,7 +82,7 @@ function moveDown(keyUp, isUserInput = false, cellsDown = 1) {
 
     if(isUserInput && !keyUp && !isSoftDropping){
         isSoftDropping = true
-        setGravity(100)
+        setGravity(75)
     }
 
     if (!froze && currentShape && !keyUp) {
@@ -359,43 +363,60 @@ function drawSquare(x, y, id, isQueue, gridTransparency = 1, isGrid = false) { /
     thisCtx.fillStyle = colors[id - 1]
     thisCtx.fillRect(x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
 
-    if(isGrid) {thisCtx.lineWidth = 1;}
-    else {thisCtx.lineWidth = 4;}
-    //background grid stroke
-    thisCtx.strokeStyle = 'rgba(242, 237, 228,' + gridTransparency + ')';
 
-
-    //line block
-    if(id==1){
-      thisCtx.strokeStyle = 'rgba(112, 200, 219,' + gridTransparency + ')';
-    }
-    //The Blue One:
-    else if(id==2){
-      thisCtx.strokeStyle = 'rgba(65, 65, 158,' + gridTransparency + ')';
-    }
-    //o range
-    else if(id==3){
-      thisCtx.strokeStyle = 'rgba(219, 131, 24,' + gridTransparency + ')';
-    }
-    //blocc
-    else if(id==4){
-      thisCtx.strokeStyle = 'rgba(245, 192, 78,' + gridTransparency + ')';
-    }
-    // gween OwO
-    else if(id==5){
-      thisCtx.strokeStyle = 'rgba(97, 150, 68,' + gridTransparency + ')';
-    }
-    // me af
-    else if(id==6){
-      thisCtx.strokeStyle = 'rgba(191, 46, 46,' + gridTransparency + ')';
-    }
-    //my t is spinning
-    else if(id==7){
-      thisCtx.strokeStyle = 'rgba(146, 77, 171,' + gridTransparency + ')';
+    function gridCell(){
+      thisCtx.lineWidth = 1;
+      thisCtx.strokeStyle = 'rgba(242, 237, 228,' + gridTransparency + ')';
+      thisCtx.strokeRect(x * BlockPixelWidth+thisCtx.lineWidth/2, y * BlockPixelHeight+thisCtx.lineWidth/2, BlockPixelWidth-thisCtx.lineWidth, BlockPixelHeight-thisCtx.lineWidth);
     }
 
-    thisCtx.strokeRect(x * BlockPixelWidth+thisCtx.lineWidth/2, y * BlockPixelHeight+thisCtx.lineWidth/2, BlockPixelWidth-thisCtx.lineWidth, BlockPixelHeight-thisCtx.lineWidth);
+    function tetrisCell(){
+      thisCtx.lineWidth = 4;
+      if(id==1){
+        thisCtx.strokeStyle = 'rgba(112, 200, 219,' + gridTransparency + ')';
+      }
+      //blue
+      else if(id==2){
+        thisCtx.strokeStyle = 'rgba(65, 65, 158,' + gridTransparency + ')';
+      }
+      //orange
+      else if(id==3){
+        thisCtx.strokeStyle = 'rgba(219, 131, 24,' + gridTransparency + ')';
+      }
+      //yellow
+      else if(id==4){
+        thisCtx.strokeStyle = 'rgba(245, 192, 78,' + gridTransparency + ')';
+      }
+      //green
+      else if(id==5){
+        thisCtx.strokeStyle = 'rgba(97, 150, 68,' + gridTransparency + ')';
+      }
+      //red
+      else if(id==6){
+        thisCtx.strokeStyle = 'rgba(191, 46, 46,' + gridTransparency + ')';
+      }
+      //purple
+      else if(id==7){
+        thisCtx.strokeStyle = 'rgba(146, 77, 171,' + gridTransparency + ')';
+      }
 
+      if(hasTheme){
+        ctx.globalAlpha = 0.2;
+        thisCtx.strokeRect(x * BlockPixelWidth+thisCtx.lineWidth/2, y * BlockPixelHeight+thisCtx.lineWidth/2, BlockPixelWidth-thisCtx.lineWidth, BlockPixelHeight-thisCtx.lineWidth);
+        ctx.globalAlpha = 0.5;
+        thisCtx.drawImage(currentTheme.blockImg,x * BlockPixelWidth, y * BlockPixelHeight, BlockPixelWidth, BlockPixelHeight)
+        ctx.globalAlpha = 1;
+      } else {
+        thisCtx.strokeRect(x * BlockPixelWidth+thisCtx.lineWidth/2, y * BlockPixelHeight+thisCtx.lineWidth/2, BlockPixelWidth-thisCtx.lineWidth, BlockPixelHeight-thisCtx.lineWidth);
+      }
+
+    }
+
+    if(isGrid){
+      gridCell()
+    } else {
+      tetrisCell()
+    }
 }
 
 
@@ -420,7 +441,9 @@ function renderStepped() {
     drawGrid()
     drawGrid(true)
     if (froze) {
-        setGravity(currentGravity)
+        if(!isSoftDropping){
+          setGravity(currentGravity)
+        }
         paintPieceToBoard()
         clearLines()
         if (!end) newTetromino();
@@ -467,11 +490,26 @@ function setGravity(msPerFall){
   GravityInterval = setInterval(gravity, msPerFall, Math.round(cellsPerFrame))
 }
 
+function setTheme(themeId){
+  if(themeId != -1){
+    hasTheme = true
+    var blockImg = new Image()
+    blockImg.src = themes[themeId] + "/block.jpg"
+
+    currentTheme.id = themeId
+    currentTheme.blockImg = blockImg
+  } else {
+    hasTheme = false
+    currentTheme = {"id": -1, "blockImg": null};
+  }
+
+}
+
 function newGame() {
     end = false;
     init()
     bag = shuffleArray([0,1,2,3,4,5,6])
-	nextBag = shuffleArray([0,1,2,3,4,5,6])
+	  nextBag = shuffleArray([0,1,2,3,4,5,6])
     newTetromino()
     RenderInterval = setInterval(renderStepped, 1000 / 60)
     setGravity(currentGravity)
